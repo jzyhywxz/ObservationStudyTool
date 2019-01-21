@@ -1,0 +1,80 @@
+﻿<Window x:Class="ObservationStudyTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:ObservationStudyTool.Models"
+        xmlns:helpers="clr-namespace:ObservationStudyTool.Helpers"
+        Title="Observation Study on Context Switches - Logging Tool"
+        Closing="WindowClosing" KeyDown="MainWindow_OnKeyDown"
+        MinHeight="300" MinWidth="600" Height="600" Width="1000">
+
+    <Window.Resources>
+        <helpers:DateTimeConverter x:Key="DateTimeConverter" />
+        <helpers:TimeSpanToSecondsConverter x:Key="TimeSpanToSecondsConverter" />
+        
+        <!--<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="GetActivityCategoryEnumValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:ActivityCategoryEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>-->
+        <!--<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="GetReasonForCsEnumValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:ReasonForCsEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>-->
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="GetTaskTypeEnumValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:TaskType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="#F6F6F6" Height="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="5,0,5,0" Orientation="Horizontal" Height="20">
+                <TextBlock Text="You can use this tool to log and annotate the context switches you observe." Margin="0 2 0 0" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5,0,5,0" Orientation="Horizontal" Height="20">
+                <TextBlock Text="Observation:" Margin="0 2 0 0" />
+                <Button x:Name="StartObservationBtn" Content="Start" Width="70" Margin="5 0 0 0" Click="StartObservationClicked" />
+                <!--<Button x:Name="PauseObservationBtn" Content="Pause" Width="70" Margin="5 0 0 0" Click="PauseObservationClicked" />-->
+                <Button x:Name="EndObservationBtn" Content="End" Width="70" Margin="5 0 0 0" Click="EndObservationClicked" />
+                <Button x:Name="ManualSaveBtn" Content="Save" Width="70" Margin="5 0 0 0" Click="SaveObservationClicked" />
+                <Button Content=" i " Margin="5 0 0 0" Click="InfoClicked" />
+            </StackPanel>
+        </Grid>
+
+        <DataGrid x:Name="LogGrid" Grid.Row="1" CanUserReorderColumns="False" CanUserDeleteRows="True" CanUserResizeRows="False" CanUserSortColumns="False"
+                  ItemsSource="{Binding ObservationItems}" InitializingNewItem="InitializingNewItemEventHandler" 
+                  GridLinesVisibility="Horizontal" AutoGenerateColumns="False" SelectionMode="Single" MinRowHeight="25">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="Created" Width="Auto" Header="Created" Binding="{Binding Created, Converter={StaticResource DateTimeConverter}}" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="TaskDuration" Header="TaskDuration" Binding="{Binding TaskDuration, Converter={StaticResource TimeSpanToSecondsConverter}}" IsReadOnly="True" />
+                <!--<DataGridComboBoxColumn x:Name="TaskNumber" Header="Task" Width="50" ItemsSource="{Binding Source={StaticResource GetTaskNumberEnumValues}}" SelectedValueBinding="{Binding TaskNumber}" IsReadOnly="False" />
+                <DataGridComboBoxColumn x:Name="ActivityCategory" Width="200" Header="Activity (Category)" ItemsSource="{Binding Source={StaticResource GetActivityCategoryEnumValues}}" SelectedValueBinding="{Binding ActivityCategory}" IsReadOnly="False"  />-->
+                <DataGridComboBoxColumn x:Name="TaskType" Header="Task Type" Width="200" ItemsSource="{Binding Source={StaticResource GetTaskTypeEnumValues}}" SelectedValueBinding="{Binding TaskType}" IsReadOnly="False" />
+                <DataGridTextColumn x:Name="TaskDescription" Header="Task Description" Width="*" Binding="{Binding TaskDescription}" IsReadOnly="False" />
+                <!--<DataGridCheckBoxColumn x:Name="IsSelfInitiatedCs" Header="Self initiated CS?" Binding="{Binding IsSelfInitiatedCs}" IsReadOnly="False" />-->
+                <!--<DataGridCheckBoxColumn x:Name="IsHardCs" Header="Hard CS?" Binding="{Binding IsHardCs}" IsReadOnly="False" />-->
+                <!--<DataGridComboBoxColumn x:Name="ReasonForCs" Width="130" Header="Reason for CS" ItemsSource="{Binding Source={StaticResource GetReasonForCsEnumValues}}" SelectedValueBinding="{Binding ReasonForCs}" IsReadOnly="False" />-->
+                <!--<DataGridTextColumn x:Name="ObserverComment" Header="Observer Comment" Binding="{Binding ObserverComment}" IsReadOnly="False" />-->
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Background="#F6F6F6" Height="20" Orientation="Horizontal">
+            <TextBlock Text="{Binding LastSuccessfulExport}" Margin="2 2 0 0" />
+        </StackPanel>
+    </Grid>
+    
+</Window>
